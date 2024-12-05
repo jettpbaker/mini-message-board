@@ -8,11 +8,15 @@
   <body>
     <main>
       <% messages.forEach((message) => { %>
-      <h2><%= message.user %></h2>
+      <h2><%= message.username %></h2>
       <p><%= message.text %></p>
       <i><%= message.added %></i>
       <% }); %>
     </main>
     <a href="/new">Create New Message</a>
+    <br />
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      ><b>Delete All Messages</b></a
+    >
   </body>
 </html>
