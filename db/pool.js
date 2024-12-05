@@ -6,4 +6,7 @@ export default new Pool({
   ssl: {
     rejectUnauthorized: false,
   },
+  idleTimeoutMillis: 300000, // 5 minutes
+  max: 20,
+  allowExitOnIdle: true,
 });
