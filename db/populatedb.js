@@ -1,25 +1,37 @@
 import pkg from "pg";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync, writeFileSync } from "fs";
 import path from "path";
 
 const { Client } = pkg;
 
 const dbUrl = process.env.DATABASE_URL;
-console.log("DATABASE_URL:", dbUrl);
 
 const sqlFilePath = path.resolve("./db/seed.sql");
 const SQL = readFileSync(sqlFilePath, "utf-8");
 
+const DB_POPULATED_FLAG = ".db_populated";
+
 async function main() {
+  if (existsSync(DB_POPULATED_FLAG)) {
+    console.log("Database already populated, skipping...");
+    return;
+  }
+
   console.log("seeding...");
   const client = new Client({
     connectionString: dbUrl,
   });
 
-  await client.connect();
-  await client.query(SQL);
-  await client.end();
-  console.log("done");
+  try {
+    await client.connect();
+    await client.query(SQL);
+    console.log("done");
+    writeFileSync(DB_POPULATED_FLAG, "true");
+  } catch (error) {
+    console.error("Error populating database:", error);
+  } finally {
+    await client.end();
+  }
 }
 
-main();
+main().catch(console.error);
